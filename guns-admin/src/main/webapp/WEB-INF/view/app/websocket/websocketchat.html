@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>广播式WebSocket</title>
+</head>
+<body>
+<p>聊天室</p>
+<form id="sangForm">
+    <textarea rows="4" cols="60" name="text"></textarea>
+    <input type="submit" value="发送"/>
+</form>
+<script src="${ctxPath}/static/js/jquery.min.js?v=2.1.4"></script>
+<script src="${ctxPath}/static/js/plugins/websocket/sockjs.min.js"></script>
+<script src="${ctxPath}/static/js/plugins/websocket/stomp.js"></script>
+<script type="text/javascript">
+    $("#sangForm").submit(function (e) {
+        e.preventDefault();
+        var textArea = $("#sangForm").find('textarea[name="text"]');
+        var text = textArea.val();
+        sendSpittle(text);
+        textArea.val('');
+    });
+    var sock = new SockJS("/endpointchat");
+    var stomp = Stomp.over(sock);
+    stomp.connect('guest','guest',function (frame) {
+        stomp.subscribe("/user/queue/notifications", handleNotification);
+    });
+    function handleNotification(message) {
+        $("#output").append("<b>Received： "+message.body+"</b><br/>")
+    }
+    function sendSpittle(text) {
+        stomp.send("/chat", {}, text);
+    }
+    $("#stop").click(function () {
+        sock.close();
+    });
+</script>
+<div id="output"></div>
+</body>
+</html>

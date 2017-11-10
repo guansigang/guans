@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>高德地图</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <style type="text/css">
+        #panel {
+            position: absolute;
+            background-color: white;
+            max-height: 90%;
+            overflow-y: auto;
+            top: 10px;
+            right: 10px;
+            width: 280px;
+        }
+    </style>
+    <script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
+    <script src="http://webapi.amap.com/maps?v=1.4.0&key=23c2bfb16de317cd5536faefb8b0287f"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+</head>
+
+
+<body>
+<div id="container"></div>
+<div style="position: absolute;">
+<button onclick="javascript:placeSearch1();">关键词搜索</button>
+</div>
+<div id="panel"></div>
+
+<script type="text/javascript">
+	//高德地图初始化
+    var map = new AMap.Map('container', {
+        resizeEnable: true,
+//         zoom:11,
+//         center: [116.40, 39.91]
+    });
+    
+    //地图中添加地图操作ToolBar插件
+    map.plugin(['AMap.ToolBar'], function() {
+        //设置地位标记为自定义标记
+        var toolBar = new AMap.ToolBar();
+        map.addControl(toolBar);
+    });
+    //添加实时路况
+//     var trafficLayer = new AMap.TileLayer.Traffic({zIndex:10}); //实时路况图层
+//     trafficLayer.setMap(map); 
+    //消除实时路况
+//     trafficLayer.setMap(null);   //隐藏实时路况图层
+//     trafficLayer.hide();   //隐藏实时路况图层
+
+// var roadNetLayer = new AMap.TileLayer.RoadNet({zIndex:10}); //实例化路网图层
+// roadNetLayer.setMap(map); //在map中添加路网图层
+
+// var satellLayer = new AMap.TileLayer.Satellite({zIndex:10}); //实例化卫星图
+// satellLayer.setMap(map); //在map中添加卫星图
+
+// var buildingLayer = new AMap.Buildings(); //实例化3D地图图层
+// buildingLayer.setMap(map); //在map中添加3D图层
+// map.setZoom(18); //改变地图级别到17-18
+//3D图没有隐藏
+// buildingLayer.setMap(null);
+
+
+//关键词查询
+function placeSearch1() {  
+	clearMap();
+// 	keyword = document.getElementById("keyword").value;
+	map.plugin(["AMap.PlaceSearch"], function() {          
+        MSearch = new AMap.PlaceSearch({ //构造地点查询类  
+            pageSize:10,  
+            pageIndex:1,  
+            city:"021" //城市  
+        });   
+        AMap.event.addListener(MSearch, "complete", Search_CallBack);//返回地点查询结果  
+        MSearch.search("合肥"); //关键字查询  
+    });  
+} 
+
+function Search_CallBack(data){
+	console.log("sfsdfsfsfd");
+	console.log(data);
+}
+
+
+//清空地图
+function clearMap(){	
+	map.clearMap();	
+// 	document.getElementById("result").innerHTML = '&nbsp;';
+}
+    
+   
+
+</script>
+</body>
+</html>
